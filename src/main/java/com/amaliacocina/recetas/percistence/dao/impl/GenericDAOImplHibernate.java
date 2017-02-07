@@ -238,5 +238,7 @@ public class GenericDAOImplHibernate<T, ID extends Serializable> implements Gene
 
 	private Class<T> getEntityClass() {
 		return (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+//FIXME: GORREGIR
+	
 	}
 }

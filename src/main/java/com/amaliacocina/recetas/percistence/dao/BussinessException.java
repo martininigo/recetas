@@ -34,6 +34,7 @@ public class BussinessException extends Exception {
 
 	public BussinessException(javax.validation.ConstraintViolationException cve) {
 		for (ConstraintViolation constraintViolation : cve.getConstraintViolations()) {
+			//FIXME: Revisar clase completa
 			String fieldName;
 			String message;
 
