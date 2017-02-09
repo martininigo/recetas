@@ -28,7 +28,7 @@ function RemoteResource($http, $q, baseUrl) {
 
         $http({
             method: 'GET',
-            url: baseUrl + '/api/SeguroMedico'
+            url: baseUrl + '/../api/insumo'
         }).success(function(data, status, headers, config) {
             defered.resolve(data);
         }).error(function(data, status, headers, config) {
@@ -107,6 +107,19 @@ function RemoteResource($http, $q, baseUrl) {
 
 }
 
+function RemoteResourceProvider() {
+    var _baseUrl;
+    this.setBaseUrl = function(baseUrl) {
+        _baseUrl = baseUrl;
+    };
+    this.$get = ['$http', '$q', function($http, $q) {
+            return new RemoteResource($http, $q, _baseUrl);
+        }];
+};
+
+app.provider("remoteResource", RemoteResourceProvider);
+
+
 app.value("urlLogo", "https://scontent-arn2-1.xx.fbcdn.net/v/t1.0-1/c70.0.200.200/p200x200/73612_213162408807358_389884659_n.jpg?oh=8fc720868b89c64878e621e6e136d709&oe=5905014D");
 app.run(["$rootScope", "urlLogo", function($rootScope, urlLogo) {
         $rootScope.urlLogo = urlLogo;
@@ -120,13 +133,13 @@ app.config(['$routeProvider', function($routeProvider) {
     });
 
     $routeProvider.when('/insumo/list', {
-        templateUrl: "insumo/insumo-list.html"//,
-//        controller: "ListadoSeguroController",
-//        resolve: {
-//            seguros: ['remoteResource', function(remoteResource) {
-//                    return remoteResource.list();
-//                }]
-//        }
+        templateUrl: "insumo/insumo-list.html",
+        controller: "InsumoListController",
+        resolve: {
+            insumos: ['remoteResource', function(remoteResource) {
+                    return remoteResource.list();
+                }]
+        }
     });
 
 
@@ -136,13 +149,13 @@ app.config(['$routeProvider', function($routeProvider) {
 
 }]);
 
-app.controller("ListadoSeguroController", ['$scope', 'seguros', 'remoteResource', function($scope, seguros, remoteResource) {
-    $scope.seguros = seguros;
+app.controller("InsumoListController", ['$scope', 'insumos', 'remoteResource', function($scope, insumos, remoteResource) {
+    $scope.insumos = insumos;
 
-    $scope.borrar = function(idSeguro) {
-        remoteResource.delete(idSeguro).then(function() {
-            remoteResource.list().then(function(seguros) {
-                $scope.seguros = seguros;
+    $scope.borrar = function(id) {
+        remoteResource.delete(id).then(function() {
+            remoteResource.list().then(function(insumos) {
+                $scope.insumos = insumos;
             }, function(bussinessMessages) {
                 $scope.bussinessMessages = bussinessMessages;
             });

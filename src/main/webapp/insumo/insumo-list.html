@@ -1,1 +1,27 @@
-<h1>Insumo List</h1>
+<h1>Listado de Insumos</h1>
+
+<table>
+	<thead>
+		<tr>
+			<th>Nombre</th>
+			<th>Descripción</th>
+			<th>Cantidad</th>
+			<th>Precio</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<td colspan="3">El NÂº de insumoss es:</td>
+			<td ng-bind="insumos.length"></td>
+		</tr>
+	</tfoot>
+	<tbody>
+		<tr ng-repeat="insumo in insumos"
+			ng-style="{color:($odd?'red':'green')}">
+			<td><a ng-href="#/insumo/edit/{{insumo.id}}">{{insumo.nombre}}</a></td>
+			<td>{{insumo.descripcion}}</td>
+			<td>{{insumo.descripcion}}</td>
+			<td>{{insumo.descripcion}}</td>
+		</tr>
+	</tbody>
+</table>
