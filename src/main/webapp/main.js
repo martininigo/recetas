@@ -1,26 +1,26 @@
-var app = angular.module("app", ['ngRoute']);
+var app = angular.module("app", ['ngRoute','xeditable']);
 
 function RemoteResource($http, $q, baseUrl) {
-//    this.get = function(idSeguro) {
-//        var defered = $q.defer();
-//        var promise = defered.promise;
+// this.get = function(idSeguro) {
+// var defered = $q.defer();
+// var promise = defered.promise;
 //
-//        $http({
-//            method: 'GET',
-//            url: baseUrl + '/api/SeguroMedico/' + idSeguro
-//        }).success(function(data, status, headers, config) {
-//            defered.resolve(data);
-//        }).error(function(data, status, headers, config) {
-//            if (status === 400) {
-//                defered.reject(data);
-//            } else {
-//                throw new Error("Fallo obtener los datos:" + status + "\n" + data);
-//            }
-//        });
+// $http({
+// method: 'GET',
+// url: baseUrl + '/api/SeguroMedico/' + idSeguro
+// }).success(function(data, status, headers, config) {
+// defered.resolve(data);
+// }).error(function(data, status, headers, config) {
+// if (status === 400) {
+// defered.reject(data);
+// } else {
+// throw new Error("Fallo obtener los datos:" + status + "\n" + data);
+// }
+// });
 //
-//        return promise;
+// return promise;
 //
-//    };
+// };
 
     this.list = function() {
         var defered = $q.defer();
@@ -43,67 +43,67 @@ function RemoteResource($http, $q, baseUrl) {
         return promise;
     };
 
-//    this.insert = function(seguroMedico) {
-//        var defered = $q.defer();
-//        var promise = defered.promise;
-//
-//        $http({
-//            method: 'POST',
-//            url: baseUrl + '/api/SeguroMedico',
-//            data: seguroMedico
-//        }).success(function(data, status, headers, config) {
-//            defered.resolve(data);
-//        }).error(function(data, status, headers, config) {
-//            if (status === 400) {
-//                defered.reject(data);
-//            } else {
-//                throw new Error("Fallo obtener los datos:" + status + "\n" + data);
-//            }
-//        });
-//
-//        return promise;
-//    };
-//
-//    this.update = function(idSeguro, seguroMedico) {
-//        var defered = $q.defer();
-//        var promise = defered.promise;
-//
-//        $http({
-//            method: 'PUT',
-//            url: baseUrl + '/api/SeguroMedico/' + idSeguro,
-//            data: seguroMedico
-//        }).success(function(data, status, headers, config) {
-//            defered.resolve(data);
-//        }).error(function(data, status, headers, config) {
-//            if (status === 400) {
-//                defered.reject(data);
-//            } else {
-//                throw new Error("Fallo obtener los datos:" + status + "\n" + data);
-//            }
-//        });
-//
-//        return promise;
-//    };
-//
-//    this.delete = function(idSeguro) {
-//        var defered = $q.defer();
-//        var promise = defered.promise;
-//
-//        $http({
-//            method: 'DELETE',
-//            url: baseUrl + '/api/SeguroMedico/' + idSeguro
-//        }).success(function(data, status, headers, config) {
-//            defered.resolve(data);
-//        }).error(function(data, status, headers, config) {
-//            if (status === 400) {
-//                defered.reject(data);
-//            } else {
-//                throw new Error("Fallo obtener los datos:" + status + "\n" + data);
-//            }
-//        });
-//
-//        return promise;
-//    };
+    this.insert = function(insumo) {
+        var defered = $q.defer();
+        var promise = defered.promise;
+
+        $http({
+            method: 'POST',
+            url: baseUrl + '/../api/insumo',
+            data: insumo
+        }).success(function(data, status, headers, config) {
+            defered.resolve(data);
+        }).error(function(data, status, headers, config) {
+            if (status === 400) {
+                defered.reject(data);
+            } else {
+                throw new Error("Fallo obtener los datos:" + status + "\n" + data);
+            }
+        });
+
+        return promise;
+    };
+
+    this.update = function(id, insumo) {
+        var defered = $q.defer();
+        var promise = defered.promise;
+
+        $http({
+            method: 'PUT',
+            url: baseUrl + '/../api/insumo/' + id,
+            data: insumo
+        }).success(function(data, status, headers, config) {
+            defered.resolve(data);
+        }).error(function(data, status, headers, config) {
+            if (status === 400) {
+                defered.reject(data);
+            } else {
+                throw new Error("Fallo obtener los datos:" + status + "\n" + data);
+            }
+        });
+
+        return promise;
+    };
+
+ this.delete = function(id) {
+ var defered = $q.defer();
+ var promise = defered.promise;
+
+ $http({
+ method: 'DELETE',
+ url: baseUrl + '/../api/insumo/' + id
+ }).success(function(data, status, headers, config) {
+ defered.resolve(data);
+ }).error(function(data, status, headers, config) {
+ if (status === 400) {
+ defered.reject(data);
+ } else {
+ throw new Error("Fallo obtener los datos:" + status + "\n" + data);
+ }
+ });
+
+ return promise;
+ };
 
 }
 
@@ -151,8 +151,9 @@ app.config(['$routeProvider', function($routeProvider) {
 
 app.controller("InsumoListController", ['$scope', 'insumos', 'remoteResource', function($scope, insumos, remoteResource) {
     $scope.insumos = insumos;
+// $scope.insumo = insumo;
 
-    $scope.borrar = function(id) {
+    $scope.delete = function(id) {
         remoteResource.delete(id).then(function() {
             remoteResource.list().then(function(insumos) {
                 $scope.insumos = insumos;
@@ -163,7 +164,24 @@ app.controller("InsumoListController", ['$scope', 'insumos', 'remoteResource', f
             $scope.bussinessMessages = bussinessMessages;
         });
     };
-
+    
+    $scope.save = function(id, insumo) {
+    	if (id == null){
+    	   	remoteResource.insert(insumo).then();
+    	}else{
+	    	remoteResource.update(id, insumo).then();
+    	}
+    };
+    $scope.addInsumo = function() {
+        $scope.inserted = {
+          id: null,
+          nombre: '',
+          descripcion: '',
+          cantidad: 0,
+          precio: 0
+        };
+        $scope.insumos.push($scope.inserted);
+      };
 }]);
 
 app.controller("MainController", ['$scope', function($scope) {
